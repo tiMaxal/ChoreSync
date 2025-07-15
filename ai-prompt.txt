@@ -6,3 +6,6 @@ allow to set time-of-day for reminder;
 allow to set an overall period of repetition [ie, only the month, or a whole year];
 have an option to add reminder\series-of-reminder to redo the import calendar, starting at a length of time specified in the gui before end-of-period [ie, a week before end-of-month-period, or a month before end-of-a-year-period]
 
+ - prompt 2:
+    - propose a readme, and speculate on a 'catchy' name for the app
+
