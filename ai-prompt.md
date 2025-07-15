@@ -26,3 +26,8 @@ frame_buttons.columnconfigure(2, weight=1) # center spacer
 frame_buttons.columnconfigure(3, weight=0) # right button [exit]
 frame_buttons.columnconfigure(4, weight=1) # right spacer
 ```
+
+- prompt 5:
+    - spread tasks evenly [across a week for daily's, across the month for weekly's];
+    - if multiple on one day, stagger tasks by interval provided by checkbox
+    - provide checkboxes for whether to schedule them 'weekdays' or 'weekends' - allow both

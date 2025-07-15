@@ -1,64 +1,84 @@
 # ChoreSynCal
-**ChoreSynCal** [Chores Sync to Calendar] is a user-friendly Python application that transforms your household chore list into a calendar-compatible .ics file. Import your chores into Google Calendar, Apple Calendar, or any iCalendar-supported app, with customizable reminders and repetition periods to keep your home organized effortlessly.
 
+ChoreSynCal [Chores Sync to Calendar] is a user-friendly Python application that transforms your household chore list into a calendar-compatible .ics file. Import your chores into Google Calendar, Apple Calendar, or any iCalendar-supported app, with customizable reminders, task distribution, and scheduling options to keep your home organized effortlessly.
 
 ## Features
-- CSV Input: Load chores from a CSV file (format: Room, Frequency, Task).
-- Flexible Scheduling: Set a specific time of day for chore reminders.
-- Repetition Periods: Choose between monthly or yearly chore cycles.
-- Re-import Reminder: Schedule a reminder to regenerate your chore calendar before the period ends.
-- Calendar Integration: Generates .ics files for seamless import into major calendar apps.
+- **CSV Input**: Reads chores from a CSV with columns `Frequency`, `Room`, `Task`.
+- **Task Distribution**:
+  - Daily tasks are spread evenly across the 7 days of the week.
+  - Weekly tasks are distributed across the weeks of a month (~4-5 weeks).
+  - Monthly tasks are scheduled on the first available day of the month.
+- **Staggered Scheduling**: Staggers same-day tasks by a user-defined interval (in minutes).
+- **Day Restrictions**: Schedules tasks on Weekdays, Weekends, or both, based on user selection.
+- **Flexible Reminders**: Supports multiple reminder times (1 hour, 30 minutes, 10 minutes; 1 day for Weekly/Monthly tasks).
+- **Repetition Periods**: Choose between monthly or yearly chore cycles.
+- **Re-import Reminder**: Adds a reminder to regenerate the calendar before the period ends.
+- **User-Friendly GUI**: Includes file selection, time inputs, day restrictions, and centered Generate/Exit buttons.
 
 ## Requirements
-Python 3.6+
-Libraries: tkinter, icalendar
-A CSV file with columns: Room, Frequency (Daily, Weekly, Monthly), Task
+- Python 3.6+
+- Libraries: `tkinter`, `icalendar`
+- A CSV file with columns: `Frequency` (Daily, Weekly, Monthly), `Room`, `Task`
 
 ## Installation
 - Ensure Python is installed on your system.
 - Install required libraries:
-```
-pip install icalendar
-```
-[Note: tkinter is typically included with Python. If not, install it (e.g., sudo apt-get install python3-tk on Debian-based systems).]
-- Download the `ChoreSynCal.py` script.
+  ```bash
+  pip install icalendar
+  ```
+  [Note: `tkinter` is typically included with Python. If not, install it (e.g., `sudo apt-get install python3-tk` on Debian-based systems).]
+- Download the `chore_calendar_generator.py` script.
 
 ## Usage
-- Prepare a CSV file with your chores, formatted like: Frequency,Room,Task
-Daily,Kitchen,Wipe down counters
-Weekly,Bathroom,Scrub toilet
-Monthly,Bedroom,Organize drawers
-
+- Prepare a CSV file with your chores, formatted like:
+  ```csv
+  Frequency,Room,Task
+  Daily,Kitchen,Wipe down counters
+  Weekly,Bathroom,Scrub toilet
+  Monthly,Bedroom,Organize drawers
+  ```
 - Run the script:
-```
-python ChoreSynCal.py
-```
-
+  ```bash
+  python chore_calendar_generator.py
+  ```
 - In the GUI:
-    - Click "Browse" to select your CSV file.
-    - Enter the time of day for chores (e.g., "09:00" for 9 AM).
-    - Choose a repetition period (Month or Year).
-    - Specify days before the period ends for a re-import reminder
-         (e.g., "7" for a week before).
-    - Click "Generate ICS File" and choose a save location.
+  - Click "Browse" to select your CSV file.
+  - Enter the time of day for chores (e.g., "09:00" for 9 AM, 24-hour format).
+  - Choose a repetition period (Month or Year).
+  - Select reminder times (1 hour, 30 minutes, 10 minutes, 1 day for Weekly/Monthly).
+  - Enter a stagger interval (minutes) for same-day tasks (e.g., "30" for 30-minute gaps).
+  - Check Weekdays and/or Weekends to restrict task days (at least one required).
+  - Enter days before period end for a re-import reminder (e.g., "7" for a week before).
+  - Click "Generate ICS File" to save the .ics file, or "Exit" to close the app.
+- Import the generated .ics file into your calendar app (e.g., Google Calendar, Apple Calendar).
 
-- Import the generated .ics file into your calendar app
-     (e.g., Google Calendar, Apple Calendar).
+## Example
+For a CSV with:
+- `Daily,Kitchen,Wipe down counters`
+- `Daily,Bathroom,Wipe sink`
+- `Weekly,Loungeroom,Vacuum`
+- `Monthly,Bedroom,Organize drawers`
 
-### Example
-For a CSV with "Kitchen,Daily,Wipe down counters", selecting 9:00 AM and a monthly period will create daily events at 9:00 AM for wiping kitchen counters, with 15-minute reminders, until the end of the month. A re-import reminder will be added (e.g., 7 days before the month ends).
+With settings: 9:00 AM, 30-minute stagger, Weekdays only, 10-minute and 1-hour reminders, Monthly period:
+- Daily tasks are spread across Monday–Friday (e.g., counters on Monday, sink on Tuesday).
+- Weekly tasks are spread across weeks (e.g., vacuum in week 1, repeating every 4 weeks).
+- Monthly tasks are on the first weekday (e.g., drawers on first Monday, staggered at 9:30).
+- Reminders are set 10 minutes and 1 hour before each task (1 day for Weekly/Monthly).
+- A re-import reminder is scheduled 7 days before the month ends.
 
-### Notes
-- Ensure the CSV has the exact columns: Frequency, Room, Task.
-- Frequency must be "Daily", "Weekly", or "Monthly" (case-insensitive).
-- The time of day must be in 24-hour format (HH:MM).
-- The re-import reminder days must be a positive integer.
+## Notes
+- **CSV Format**: Must have `Frequency` (Daily, Weekly, Monthly, case-insensitive), `Room`, `Task` columns.
+- **Time Format**: Use HH:MM (24-hour, e.g., "09:00").
+- **Stagger Interval**: Non-negative integer (0 for no staggering).
+- **Day Selection**: At least one of Weekdays or Weekends must be selected.
+- **Reminders**: At least one reminder is applied (defaults to 10 minutes if none selected). 1-day reminders are ignored for Daily tasks.
+- **Period**: Month schedules until the last day of the current month; Year until December 31.
 
-### Contributing
-- Suggestions and pull requests are welcome!
-     Please open an issue to discuss improvements or report bugs.
+## Contributing
+- Suggestions and pull requests are welcome! Please open an issue to discuss improvements or report bugs.
 
 ## License
 MIT License - feel free to use, modify, and distribute.
 
-Generated by ChoreSynCal - Keep your home in sync!
+---
+*Generated by ChoreSynCal - Sync your chores, simplify your life!*

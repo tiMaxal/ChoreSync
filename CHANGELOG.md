@@ -1,5 +1,11 @@
 # ChoreSync
 
+## 0.3.0
+
+### Minor Changes
+
+- stagger tasks
+
 ## 0.2.1
 
 ### Patch Changes
