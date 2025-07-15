@@ -1,0 +1,41 @@
+Frequency,Room,Task
+Daily,Kitchen,Wipe down counters
+Daily,Kitchen,Empty trash
+Daily,Kitchen,Load/unload dishwasher
+Daily,Bathroom,Wipe sink
+Daily,Bathroom,Replace towels
+Daily,Bedroom,Make bed
+Daily,Bedroom,Tidy bedside table
+Daily,Loungeroom,Tidy cushions/blankets
+Daily,Laundry,Do one load
+Daily,Laundry,Fold laundry
+Monthly,Kitchen,Clean oven
+Monthly,Kitchen,Wipe cupboard handles
+Monthly,Kitchen,Throw out expired food
+Monthly,Bathroom,Clean behind toilet
+Monthly,Bathroom,Clean light switches
+Monthly,Bedroom,Organize drawers
+Monthly,Bedroom,Clean window sills
+Monthly,Loungeroom,Clean under furniture
+Monthly,Loungeroom,Dust ceiling fan
+Monthly,Laundry,Clean behind machines
+Monthly,Generic,Clean vents
+Monthly,Generic,Clean window screens
+Monthly,Generic,Dust picture frames
+Weekly,Kitchen,Clean fridge shelves
+Weekly,Kitchen,Mop floor
+Weekly,Kitchen,Clean microwave
+Weekly,Bathroom,Scrub toilet
+Weekly,Bathroom,Clean shower/tub
+Weekly,Bathroom,Mop floor
+Weekly,Bedroom,Change sheets
+Weekly,Bedroom,Vacuum floor
+Weekly,Bedroom,Dust surfaces
+Weekly,Loungeroom,Vacuum
+Weekly,Loungeroom,Dust surfaces
+Weekly,Loungeroom,Water plants
+Weekly,Laundry,Wipe machines
+Weekly,Laundry,Tidy laundry area
+Weekly,Generic,Wipe switches
+Weekly,Generic,Clean mirrors
+Weekly,Generic,Shake out rugs
