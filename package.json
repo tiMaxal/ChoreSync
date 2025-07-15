@@ -1,0 +1,21 @@
+{
+  "name": "ChoreSync",
+  "version": "0.1.1",
+  "description": "Create calendar chores, via iCAL .ics file, from CSV files.",
+  "main": "choresync.py",
+  "scripts": {
+    "start": "python choresync.py",
+    "changeset": "changeset",
+    "version-packages": "changeset version"
+  },
+  "keywords": [
+    "calendar",
+    "csv",
+    "ics"
+  ],
+  "author": "tiMaxal",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.29.5"
+  }
+}
