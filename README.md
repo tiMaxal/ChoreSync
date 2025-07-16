@@ -10,6 +10,8 @@ ChoreSynCal [Chores Sync to Calendar] is a user-friendly Python application that
   - Monthly tasks are scheduled on the first available day of the month.
 - **Active Hours**: Restricts task scheduling to a user-defined time window (e.g., 08:00–18:00).
 - **Staggered Scheduling**: Staggers same-day tasks by a user-defined interval (in minutes).
+  - For Daily tasks exceeding active hours: moves to next available day if Monthly or Weekly tasks are present; otherwise, squeezes task durations to fit.
+  - For Weekly/Monthly tasks: wraps to the next available day's start time.
 - **Day Restrictions**: Schedules tasks on Weekdays, Weekends, or both, based on user selection.
 - **Flexible Reminders**: Supports multiple reminder times (1 hour, 30 minutes, 10 minutes; 1 day for Weekly/Monthly tasks).
 - **Repetition Periods**: Choose between monthly or yearly chore cycles.
@@ -58,20 +60,21 @@ ChoreSynCal [Chores Sync to Calendar] is a user-friendly Python application that
 For a CSV with:
 - `Daily,Kitchen,Wipe down counters`
 - `Daily,Bathroom,Wipe sink`
+- `Daily,Loungeroom,Tidy cushions`
 - `Weekly,Loungeroom,Vacuum`
 - `Monthly,Bedroom,Organize drawers`
 
-With settings: Active hours 08:00–18:00, Preferred start 09:00, 30-minute stagger, Weekdays only, 10-minute and 1-hour reminders, Monthly period:
-- Daily tasks are spread across Monday–Friday (e.g., counters on Monday at 09:00, sink on Tuesday at 09:00).
+With settings: Active hours 08:00–10:00, Preferred start 09:00, 30-minute stagger, Weekdays only, 10-minute and 1-hour reminders, Monthly period:
+- Daily tasks are spread across Monday–Friday (e.g., counters on Monday at 09:00, sink on Tuesday at 09:00, cushions on Wednesday at 09:00). If staggering exceeds 10:00 (e.g., 3 tasks at 30-minute intervals), tasks are squeezed to fit (e.g., 20-minute intervals: 09:00, 09:20, 09:40) unless Monthly/Weekly tasks are on the same day, then moved to the next available day.
 - Weekly tasks are spread across weeks (e.g., vacuum in week 1 at 09:00, repeating every 4 weeks).
-- Monthly tasks are on the first weekday (e.g., drawers on first Monday at 09:30, staggered within 08:00–18:00).
+- Monthly tasks are on the first weekday (e.g., drawers on first Monday at 09:00, within 08:00–10:00).
 - Reminders are set 10 minutes and 1 hour before each task (1 day for Weekly/Monthly).
 - A re-import reminder is scheduled 7 days before the month ends, within active hours.
 
 ## Notes
 - **CSV Format**: Must have `Frequency` (Daily, Weekly, Monthly, case-insensitive), `Room`, `Task` columns.
 - **Time Format**: Use HH:MM (24-hour, e.g., "08:00"). Active hours end must be after start.
-- **Stagger Interval**: Non-negative integer (0 for no staggering). Tasks exceeding active hours wrap to the next available day's start time.
+- **Stagger Interval**: Non-negative integer (0 for no staggering). For Daily tasks, if exceeding active hours, tasks are moved to the next available day if Monthly/Weekly tasks are present; otherwise, durations are adjusted to fit.
 - **Day Selection**: At least one of Weekdays or Weekends must be selected.
 - **Reminders**: At least one reminder is applied (defaults to 10 minutes if none selected). 1-day reminders are ignored for Daily tasks.
 - **Period**: Month schedules until the last day of the current month; Year until December 31.

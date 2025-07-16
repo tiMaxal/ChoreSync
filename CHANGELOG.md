@@ -1,5 +1,11 @@
 # ChoreSync
 
+## 0.4.1
+
+### Patch Changes
+
+- adjust stagger overflow to shunt+squeeze
+
 ## 0.4.0
 
 ### Minor Changes
