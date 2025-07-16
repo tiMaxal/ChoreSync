@@ -36,3 +36,8 @@ frame_buttons.columnconfigure(4, weight=1) # right spacer
 
 - prompt 6:
     - provide a pair of fields to define 'active hours'; restrict calendar placement of events to between these times
+
+- prompt 7:
+    - "If staggering pushes a task beyond the end time, wrap it to the start of the active hours on the next available day."
+      - ok for week or month events, but if a daily task, adjust all task lengths of that day to fit it [first, if the day has month task(s), move to next day, then move week task(s) to next day, then 'squeeze']
+

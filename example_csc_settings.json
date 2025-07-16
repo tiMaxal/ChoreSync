@@ -1,0 +1,15 @@
+{
+    "csv_file": "chores.csv",
+    "active_start": "08:00",
+    "active_end": "18:00",
+    "time_of_day": "09:00",
+    "period": "Month",
+    "reminder_days": "7",
+    "reminder_1hr": false,
+    "reminder_30min": true,
+    "reminder_10min": false,
+    "reminder_1day": false,
+    "stagger_interval": "30",
+    "schedule_weekdays": true,
+    "schedule_weekends": true
+}

@@ -15,7 +15,9 @@ ChoreSynCal [Chores Sync to Calendar] is a user-friendly Python application that
 - **Day Restrictions**: Schedules tasks on Weekdays, Weekends, or both, based on user selection.
 - **Flexible Reminders**: Supports multiple reminder times (1 hour, 30 minutes, 10 minutes; 1 day for Weekly/Monthly tasks).
 - **Repetition Periods**: Choose between monthly or yearly chore cycles.
-- **Re-import Reminder**: Adds a reminder to regenerate the calendar before the period ends.
+- **Re-import Reminder**: Adds a reminder to regenerate the calendar before the period ends (max 28 days for Month, 365 for Year).
+- **Persistent Settings**: Saves user preferences to `csc_settings.json` for reuse.
+- **Error Handling and Logging**: Displays user-friendly error messages and logs actions/errors to `csc.log`.
 - **User-Friendly GUI**: Includes file selection, time inputs, day restrictions, active hours, and centered Generate/Exit buttons.
 
 ## Requirements
@@ -44,7 +46,7 @@ ChoreSynCal [Chores Sync to Calendar] is a user-friendly Python application that
   ```bash
   python ChoreSynCal.py
   ```
-- In the GUI:
+- In the GUI (settings are loaded from `csc_settings.json` if available):
   - Click "Browse" to select your CSV file.
   - Enter active hours (e.g., Start: "08:00", End: "18:00", 24-hour format).
   - Enter the preferred start time for chores (e.g., "09:00", within active hours).
@@ -52,9 +54,10 @@ ChoreSynCal [Chores Sync to Calendar] is a user-friendly Python application that
   - Select reminder times (1 hour, 30 minutes, 10 minutes, 1 day for Weekly/Monthly).
   - Enter a stagger interval (minutes) for same-day tasks (e.g., "30" for 30-minute gaps).
   - Check Weekdays and/or Weekends to restrict task days (at least one required).
-  - Enter days before period end for a re-import reminder (e.g., "7" for a week before).
-  - Click "Generate ICS File" to save the .ics file, or "Exit" to close the app.
+  - Enter days before period end for a re-import reminder (e.g., "7", max 28 for Month, 365 for Year).
+  - Click "Generate ICS File" to save the .ics file, or "Exit" to save settings and close.
 - Import the generated .ics file into your calendar app (e.g., Google Calendar, Apple Calendar).
+- Check `csc.log` for logs of actions and errors.
 
 ## Example
 For a CSV with:
@@ -64,7 +67,7 @@ For a CSV with:
 - `Weekly,Loungeroom,Vacuum`
 - `Monthly,Bedroom,Organize drawers`
 
-With settings: Active hours 08:00–10:00, Preferred start 09:00, 30-minute stagger, Weekdays only, 10-minute and 1-hour reminders, Monthly period:
+With settings: Active hours 08:00–10:00, Preferred start 09:00, 30-minute stagger, Weekdays only, 10-minute and 1-hour reminders, Monthly period, 7-day re-import reminder:
 - Daily tasks are spread across Monday–Friday (e.g., counters on Monday at 09:00, sink on Tuesday at 09:00, cushions on Wednesday at 09:00). If staggering exceeds 10:00 (e.g., 3 tasks at 30-minute intervals), tasks are squeezed to fit (e.g., 20-minute intervals: 09:00, 09:20, 09:40) unless Monthly/Weekly tasks are on the same day, then moved to the next available day.
 - Weekly tasks are spread across weeks (e.g., vacuum in week 1 at 09:00, repeating every 4 weeks).
 - Monthly tasks are on the first weekday (e.g., drawers on first Monday at 09:00, within 08:00–10:00).
@@ -77,6 +80,9 @@ With settings: Active hours 08:00–10:00, Preferred start 09:00, 30-minute stag
 - **Stagger Interval**: Non-negative integer (0 for no staggering). For Daily tasks, if exceeding active hours, tasks are moved to the next available day if Monthly/Weekly tasks are present; otherwise, durations are adjusted to fit.
 - **Day Selection**: At least one of Weekdays or Weekends must be selected.
 - **Reminders**: At least one reminder is applied (defaults to 10 minutes if none selected). 1-day reminders are ignored for Daily tasks.
+- **Re-import Reminder**: Must not exceed 28 days for Month or 365 for Year to avoid date errors.
+- **Settings**: Saved to `csc_settings.json` on ICS generation or exit.
+- **Logging**: Errors and actions are logged to `csc.log` for troubleshooting.
 - **Period**: Month schedules until the last day of the current month; Year until December 31.
 
 ## Contributing

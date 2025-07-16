@@ -1,0 +1,15 @@
+{
+    "csv_file": "E:/STORE/DOCS/text/code_text/ai-assist/ai-code_choresync/ChoreSync/test-ics-files/cleaning_schedule_table.csv",
+    "active_start": "10:00",
+    "active_end": "14:00",
+    "time_of_day": "09:00",
+    "period": "Year",
+    "reminder_days": "27",
+    "reminder_1hr": true,
+    "reminder_30min": false,
+    "reminder_10min": true,
+    "reminder_1day": true,
+    "stagger_interval": "30",
+    "schedule_weekdays": true,
+    "schedule_weekends": false
+}
