@@ -31,3 +31,8 @@ frame_buttons.columnconfigure(4, weight=1) # right spacer
     - spread tasks evenly [across a week for daily's, across the month for weekly's];
     - if multiple on one day, stagger tasks by interval provided by checkbox
     - provide checkboxes for whether to schedule them 'weekdays' or 'weekends' - allow both
+
+## 20250716
+
+- prompt 6:
+    - provide a pair of fields to define 'active hours'; restrict calendar placement of events to between these times

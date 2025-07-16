@@ -1,10 +1,10 @@
 {
-  "name": "ChoreSync",
+  "name": "ChoreSynCal",
   "version": "0.3.0",
   "description": "Create calendar chores, via iCAL .ics file, from CSV files.",
   "main": "choresync.py",
   "scripts": {
-    "start": "python choresync.py",
+    "start": "python choresyncal.py",
     "changeset": "changeset",
     "version-packages": "changeset version"
   },
