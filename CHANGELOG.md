@@ -1,5 +1,11 @@
 # ChoreSync
 
+## 0.4.0
+
+### Minor Changes
+
+- add 'active hours'
+
 ## 0.3.0
 
 ### Minor Changes

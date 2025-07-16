@@ -15,6 +15,8 @@ class ChoreSynCalApp:
         # Initialize variables
         self.csv_file = tk.StringVar()
         self.time_of_day = tk.StringVar(value="09:00")
+        self.active_start = tk.StringVar(value="08:00")
+        self.active_end = tk.StringVar(value="18:00")
         self.period = tk.StringVar(value="Month")
         self.reminder_days = tk.StringVar(value="7")
         self.reminder_1hr = tk.BooleanVar(value=False)
@@ -33,8 +35,15 @@ class ChoreSynCalApp:
         tk.Entry(root, textvariable=self.csv_file, width=50).pack()
         tk.Button(root, text="Browse", command=self.browse_file).pack(pady=5)
         
+        # Active Hours
+        tk.Label(root, text="Active Hours for Scheduling (HH:MM, 24-hour):").pack()
+        tk.Label(root, text="Start Time:").pack()
+        tk.Entry(root, textvariable=self.active_start, width=10).pack()
+        tk.Label(root, text="End Time:").pack()
+        tk.Entry(root, textvariable=self.active_end, width=10).pack()
+        
         # Time of Day
-        tk.Label(root, text="Time of Day for Chores (HH:MM, 24-hour):").pack()
+        tk.Label(root, text="Preferred Start Time for Chores (HH:MM, within active hours):").pack()
         tk.Entry(root, textvariable=self.time_of_day, width=10).pack()
         
         # Repetition Period
@@ -103,6 +112,13 @@ class ChoreSynCalApp:
         except ValueError:
             return False
     
+    def validate_active_hours(self, start_str, end_str):
+        if not (self.validate_time(start_str) and self.validate_time(end_str)):
+            return False
+        start_time = datetime.strptime(start_str, "%H:%M")
+        end_time = datetime.strptime(end_str, "%H:%M")
+        return end_time > start_time
+    
     def get_reminder_triggers(self, frequency):
         triggers = []
         if self.reminder_1hr.get():
@@ -125,6 +141,32 @@ class ChoreSynCalApp:
                 available_days.append(current_day)
         return available_days
     
+    def adjust_to_active_hours(self, event_time, active_start, active_end, stagger_offset, available_days):
+        stagger_minutes = stagger_offset // 60
+        active_start_time = datetime.strptime(self.active_start.get(), "%H:%M")
+        active_end_time = datetime.strptime(self.active_end.get(), "%H:%M")
+        active_duration = (active_end_time - active_start_time).seconds // 60  # Duration in minutes
+        
+        # Calculate total minutes since active start
+        event_minutes = (event_time.hour * 60 + event_time.minute + stagger_offset) - (active_start_time.hour * 60 + active_start_time.minute)
+        
+        # If event time is before active start, move to active start
+        if event_minutes < 0:
+            event_minutes = 0
+        
+        # If event time exceeds active end, wrap to next available day
+        if event_minutes >= active_duration:
+            days_to_add = event_minutes // active_duration
+            minutes_remaining = event_minutes % active_duration
+            event_time = event_time.replace(hour=active_start_time.hour, minute=active_start_time.minute) + timedelta(minutes=minutes_remaining, days=days_to_add)
+            
+            # Ensure the new day is available
+            while event_time.date() not in [d.date() for d in available_days]:
+                event_time += timedelta(days=1)
+                event_time = event_time.replace(hour=active_start_time.hour, minute=active_start_time.minute)
+        
+        return event_time
+    
     def generate_ics(self):
         # Validate inputs
         if not self.csv_file.get():
@@ -144,6 +186,9 @@ class ChoreSynCalApp:
             return
         if not (self.schedule_weekdays.get() or self.schedule_weekends.get()):
             messagebox.showerror("Error", "Select at least one: Weekdays or Weekends")
+            return
+        if not self.validate_active_hours(self.active_start.get(), self.active_end.get()):
+            messagebox.showerror("Error", "Invalid active hours. Ensure start and end are HH:MM and end is after start")
             return
         
         # Read CSV
@@ -194,7 +239,10 @@ class ChoreSynCalApp:
                 day_offset = (i // chores_per_day) % days_in_week
                 event_start = start_date + timedelta(days=day_offset)
                 stagger_offset = (i % chores_per_day) * stagger_minutes
-                event_start = event_start.replace(hour=hour, minute=minute) + timedelta(minutes=stagger_offset)
+                event_start = event_start.replace(hour=hour, minute=minute)
+                
+                # Adjust to active hours
+                event_start = self.adjust_to_active_hours(event_start, self.active_start.get(), self.active_end.get(), stagger_offset, available_days)
                 
                 if event_start.date() not in [d.date() for d in available_days]:
                     continue  # Skip if not an available day
@@ -224,7 +272,10 @@ class ChoreSynCalApp:
                 week_offset = (i // chores_per_week) * 7
                 event_start = start_date + timedelta(days=week_offset)
                 stagger_offset = (i % chores_per_week) * stagger_minutes
-                event_start = event_start.replace(hour=hour, minute=minute) + timedelta(minutes=stagger_offset)
+                event_start = event_start.replace(hour=hour, minute=minute)
+                
+                # Adjust to active hours
+                event_start = self.adjust_to_active_hours(event_start, self.active_start.get(), self.active_end.get(), stagger_offset, available_days)
                 
                 if event_start.date() not in [d.date() for d in available_days]:
                     continue  # Skip if not an available day
@@ -250,10 +301,14 @@ class ChoreSynCalApp:
         for i, chore in enumerate(monthly_chores):
             event_start = start_date
             stagger_offset = i * stagger_minutes
-            event_start = event_start.replace(hour=hour, minute=minute) + timedelta(minutes=stagger_offset)
+            event_start = event_start.replace(hour=hour, minute=minute)
+            
+            # Adjust to active hours
+            event_start = self.adjust_to_active_hours(event_start, self.active_start.get(), self.active_end.get(), stagger_offset, available_days)
             
             if event_start.date() not in [d.date() for d in available_days]:
-                event_start = available_days[0].replace(hour=hour, minute=minute) + timedelta(minutes=stagger_offset)
+                event_start = available_days[0].replace(hour=hour, minute=minute)
+                event_start = self.adjust_to_active_hours(event_start, self.active_start.get(), self.active_end.get(), stagger_offset, available_days)
             
             event = Event()
             event.add('summary', f"{chore['Room']}: {chore['Task']}")
@@ -277,12 +332,15 @@ class ChoreSynCalApp:
         if reimport_date.date() not in [d.date() for d in available_days]:
             reimport_date = available_days[-1]  # Use last available day if needed
         
+        reimport_date = reimport_date.replace(hour=hour, minute=minute)
+        reimport_date = self.adjust_to_active_hours(reimport_date, self.active_start.get(), self.active_end.get(), 0, available_days)
+        
         reimport_event = Event()
         reimport_event.add('summary', 'Reminder: Re-import Chore Calendar')
         reimport_event.add('uid', str(uuid.uuid4()))
         reimport_event.add('dtstamp', datetime.now())
-        reimport_event.add('dtstart', reimport_date.replace(hour=hour, minute=minute))
-        reimport_event.add('dtend', reimport_date.replace(hour=hour, minute=minute) + timedelta(hours=1))
+        reimport_event.add('dtstart', reimport_date)
+        reimport_event.add('dtend', reimport_date + timedelta(hours=1))
         
         for trigger in self.get_reminder_triggers('daily'):
             alarm = Alarm()
